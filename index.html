@@ -14,96 +14,68 @@
             --accent: #ffb300;
         }
 
-        /* =========================================
-           1. TEMA ROYALTY (MEWAH)
-           ========================================= */
+        /* --- TEMA ROYALTY --- */
         .mode-royalty {
             --bg-body: #0f0f0f;
             --text-color: #f3e5f5;
             --header-bg: #1a1a1a;
             --accent: #d4af37;
         }
-        .mode-royalty .side { border: 4px solid var(--accent); border-radius: 0; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
+        .mode-royalty .side { border: 4px solid var(--accent); border-radius: 0; }
         .mode-royalty .blue-side { background: radial-gradient(circle, #002366, #000); }
         .mode-royalty .red-side { background: radial-gradient(circle, #800000, #000); }
-        .mode-royalty .score { color: var(--accent); text-shadow: 0 0 30px rgba(212, 175, 55, 0.5); font-family: 'Times New Roman', serif; }
-        .mode-royalty .timer { background: #1a1a1a; color: var(--accent); border: 2px solid var(--accent); border-radius: 0; }
-        .mode-royalty .round-num { background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 0; }
+        .mode-royalty .score { color: var(--accent); text-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
 
-        /* =========================================
-           2. TEMA DEEP SPACE (MODE MALAM)
-           ========================================= */
+        /* --- TEMA DEEP SPACE --- */
         .mode-malam-premium {
-            --bg-body: #020617;
-            --text-color: #f8fafc;
-            --header-bg: #0f172a;
-            --accent: #38bdf8;
+            --bg-body: #020617; --text-color: #f8fafc; --header-bg: #0f172a; --accent: #38bdf8;
         }
-        .mode-malam-premium .timer { background: #1e293b; color: #38bdf8; border-color: #334155; }
         .mode-malam-premium .blue-side { background: linear-gradient(180deg, #1e3a8a, #020617); }
         .mode-malam-premium .red-side { background: linear-gradient(180deg, #7f1d1d, #020617); }
 
-        /* =========================================
-           3. TEMA SPORTY NEON
-           ========================================= */
+        /* --- TEMA SPORTY --- */
         .mode-sporty {
-            --bg-body: #000;
-            --text-color: #fff;
-            --header-bg: #111;
-            --accent: #ccff00;
+            --bg-body: #000; --text-color: #fff; --header-bg: #111; --accent: #ccff00;
         }
-        .mode-sporty .timer { background: #000; color: var(--accent); border: 4px solid var(--accent); border-radius: 0; font-style: italic; }
-        .mode-sporty .round-num { border-radius: 0; background: var(--accent); color: #000; transform: skewX(-10deg); }
         .mode-sporty .blue-side { background: #001eff; border-radius: 0; clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); }
         .mode-sporty .red-side { background: #ff0000; border-radius: 0; clip-path: polygon(5% 0, 100% 0, 100% 100%, 0% 100%); }
 
-        /* DASAR LAYOUT */
+        /* LAYOUT DASAR */
         body { background: var(--bg-body); color: var(--text-color); font-family: var(--font-main); margin: 0; padding: 20px; overflow: hidden; transition: all 0.5s ease; }
-        .header { display: flex; justify-content: space-between; background: var(--header-bg); padding: 15px 25px; border-radius: 12px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); align-items: center; }
-        .partai-box { background: var(--accent); color: #000; padding: 5px 15px; border-radius: 6px; font-size: 1.2rem; }
+        .header { display: flex; justify-content: space-between; background: var(--header-bg); padding: 15px 25px; border-radius: 12px; font-weight: bold; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .partai-box { background: var(--accent); color: #000; padding: 5px 15px; border-radius: 6px; }
         .scoreboard { display: grid; grid-template-columns: 1fr 250px 1fr; gap: 20px; align-items: center; margin-top: 20px; }
-        .side { border-radius: 20px; padding: 30px; text-align: center; min-height: 450px; color: white; display: flex; flex-direction: column; justify-content: center; position: relative; border: 6px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: all 0.4s ease; }
+        .side { border-radius: 20px; padding: 30px; text-align: center; min-height: 450px; color: white; display: flex; flex-direction: column; justify-content: center; border: 6px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .blue-side { background: linear-gradient(135deg, #0047bb, #0056b3); }
         .red-side { background: linear-gradient(135deg, #d00000, #b33939); }
         .player-name { font-size: 3rem; font-weight: 900; text-transform: uppercase; margin: 0; }
-        .team-name { font-size: 1rem; opacity: 0.8; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; }
         .score { font-size: var(--score-size); font-weight: 900; line-height: 1; margin: 0; }
         .timer { font-size: 5rem; font-weight: bold; font-family: var(--font-timer); background: #fff; color: #222; padding: 15px; border-radius: 15px; border: 4px solid #ddd; text-align: center; }
         .round-num { font-size: 3.5rem; background: #2ed573; color: white; padding: 10px 40px; border-radius: 15px; font-weight: 900; display: inline-block; margin-top: 15px; }
-        #victoryOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; text-align: center; color: white; backdrop-filter: blur(10px); }
-        .win-name { font-size: 8rem; font-weight: 900; text-transform: uppercase; }
-        .hidden-theme-trigger { position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; background: transparent; border: none; cursor: pointer; z-index: 9999; }
+        .hidden-theme-trigger { position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; background: transparent; border: none; cursor: pointer; }
     </style>
 </head>
 <body id="mainBody">
 
-<div id="victoryOverlay" onclick="this.style.display='none'">
-    <p style="font-size: 2rem; font-weight: bold; letter-spacing: 5px;">PEMENANG</p>
-    <h1 id="winnerName" class="win-name">BIRU</h1>
-</div>
-
 <div class="header">
-    <div id="dispKelas" style="font-size: 1.2rem;">KELAS ...</div>
+    <div id="dispKelas">KELAS ...</div>
     <div class="partai-box">PARTAI <span id="dispPartai">0</span></div>
-    <div style="font-size: 1.2rem;">SERA CHAMPIONSHIP</div>
+    <div>SERA CHAMPIONSHIP</div>
 </div> 
 
 <div class="scoreboard">
-    <div class="side blue-side" onclick="showVictory('Biru')">
-        <div class="team-name" id="dispTimBiru">KONTINGEN</div>
-        <div class="player-name" id="dispNamaBiru">PESILAT BIRU</div>
+    <div class="side blue-side">
+        <div id="dispTimBiru" style="opacity:0.8">KONTINGEN</div>
+        <div class="player-name" id="dispNamaBiru">BIRU</div>
         <div class="score" id="scoreBiru">0</div>
     </div>
     <div class="center-col" style="text-align: center;">
         <div class="timer" id="timerDisplay">02:00</div>
-        <div>
-            <div style="font-weight: bold; opacity: 0.7; margin-top: 20px;">RONDE</div>
-            <div class="round-num" id="roundDisplay">I</div>
-        </div>
+        <div class="round-num" id="roundDisplay">I</div>
     </div>
-    <div class="side red-side" onclick="showVictory('Merah')">
-        <div class="team-name" id="dispTimMerah">KONTINGEN</div>
-        <div class="player-name" id="dispNamaMerah">PESILAT MERAH</div>
+    <div class="side red-side">
+        <div id="dispTimMerah" style="opacity:0.8">KONTINGEN</div>
+        <div class="player-name" id="dispNamaMerah">MERAH</div>
         <div class="score" id="scoreMerah">0</div>
     </div>
 </div>
@@ -122,22 +94,20 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // SINKRONISASI DATA DASAR
+    // SINKRONISASI DATA
     db.ref('match_info').on('value', snap => {
         const d = snap.val(); if(!d) return;
-        document.getElementById('dispKelas').innerText = d.kelas || 'KELAS ...';
-        document.getElementById('dispPartai').innerText = d.partai || '0';
-        document.getElementById('dispNamaBiru').innerText = d.namaBiru || 'BIRU';
-        document.getElementById('dispTimBiru').innerText = d.timBiru || 'KONTINGEN';
-        document.getElementById('dispNamaMerah').innerText = d.namaMerah || 'MERAH';
-        document.getElementById('dispTimMerah').innerText = d.timMerah || 'KONTINGEN';
+        document.getElementById('dispKelas').innerText = d.kelas;
+        document.getElementById('dispPartai').innerText = d.partai;
+        document.getElementById('dispNamaBiru').innerText = d.namaBiru;
+        document.getElementById('dispNamaMerah').innerText = d.namaMerah;
     });
 
     db.ref('match_status').on('value', snap => {
         const d = snap.val(); if(!d) return;
-        document.getElementById('roundDisplay').innerText = ["","I","II","III"][d.round] || "I";
+        document.getElementById('roundDisplay').innerText = ["","I","II","III"][d.round];
         let m = Math.floor(d.timeLeft / 60), s = d.timeLeft % 60;
-        document.getElementById('timerDisplay').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        document.getElementById('timerDisplay').innerText = `${m}:${s.toString().padStart(2,'0')}`;
     });
 
     db.ref('score').on('value', snap => {
@@ -146,66 +116,57 @@
         document.getElementById('scoreMerah').innerText = d.Merah;
     });
 
-    // --- LOGIKA POINT OTOMATIS (FIXED ANTI-TRIPLE) ---
+    // --- LOGIKA ANTI-DOUBLE & ANTI-TRIPLE (SISTEM LOCK) ---
     let actionQueue = [];
-    let lastProcessedAksi = {
-        "Biru-pukul": 0, "Biru-tendang": 0,
-        "Merah-pukul": 0, "Merah-tendang": 0
+    let isLocked = {
+        "Biru-pukul": false, "Biru-tendang": false,
+        "Merah-pukul": false, "Merah-tendang": false
     };
 
     db.ref('log_wasit').on('child_added', snap => {
         const d = snap.val();
-        const now = d.waktu;
-        const key = `${d.sudut}-${d.aksi}`;
+        const typeKey = `${d.sudut}-${d.aksi}`;
         
-        // Simpan ke antrean lokal
+        // 1. Jika tipe poin ini sedang dikunci (karena baru saja sah), abaikan semua klik juri lain
+        if (isLocked[typeKey]) return;
+
         actionQueue.push(d);
 
-        // 1. Cek apakah aksi yang sama baru saja diproses poinnya dalam 2 detik terakhir?
-        if (now - lastProcessedAksi[key] < 2000) {
-            console.log("Diabaikan: Aksi ini sudah sah baru saja.");
-            return; 
-        }
-
-        // 2. Filter juri yang memberikan nilai yang sama dalam jendela 2 detik
-        const sameActions = actionQueue.filter(item => 
+        // 2. Filter juri yang menekan aksi yang sama dalam jendela 2 detik
+        const validGroup = actionQueue.filter(item => 
             item.sudut === d.sudut && 
             item.aksi === d.aksi && 
-            Math.abs(now - item.waktu) <= 2000
+            Math.abs(d.waktu - item.waktu) <= 2000
         );
 
-        // 3. Ambil daftar juri unik
-        const uniqueJudges = [...new Set(sameActions.map(i => i.wasit))];
+        // 3. Hitung juri unik
+        const uniqueJudges = [...new Set(validGroup.map(i => i.wasit))];
 
-        // 4. Jika minimal 2 juri menekan
+        // 4. Jika minimal 2 juri setuju
         if (uniqueJudges.length >= 2) {
-            // KUNCI: Update waktu terakhir diproses SEBELUM menambah poin
-            lastProcessedAksi[key] = now;
+            // KUNCI sistem untuk aksi ini agar tidak terjadi double/triple
+            isLocked[typeKey] = true;
 
-            // Tambah poin
+            // Tambah poin (Cukup 1 kali saja)
             const poin = (d.aksi === 'pukul' ? 1 : 2);
             db.ref(`score/${d.sudut}`).transaction(c => (c || 0) + poin);
             
-            console.log(`SAH! Poin ${d.sudut} +${poin} dari Juri: ${uniqueJudges.join(',')}`);
+            console.log(`POIN SAH: ${typeKey} bertambah ${poin}`);
 
-            // Bersihkan antrean lama agar tidak menumpuk
-            actionQueue = actionQueue.filter(item => (now - item.waktu) < 5000);
+            // Buka kunci kembali setelah 2 detik untuk serangan berikutnya
+            setTimeout(() => {
+                isLocked[typeKey] = false;
+                // Bersihkan antrean lama
+                actionQueue = actionQueue.filter(item => item.sudut !== d.sudut || item.aksi !== d.aksi);
+            }, 2000);
         }
     });
 
-    // TEMA & VICTORY
     let idx = 0;
     const themes = ['default', 'mode-royalty', 'mode-malam-premium', 'mode-sporty'];
     function cycleTheme() {
         idx = (idx + 1) % themes.length;
         document.getElementById('mainBody').className = themes[idx];
-    }
-
-    function showVictory(corner) {
-        const overlay = document.getElementById('victoryOverlay');
-        document.getElementById('winnerName').innerText = corner;
-        overlay.style.display = 'flex';
-        overlay.style.background = corner === 'Biru' ? 'radial-gradient(circle, #0047bb, #000)' : 'radial-gradient(circle, #d00000, #000)';
     }
 </script>
 </body>
