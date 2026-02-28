@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dewan</title>
+    <style>
+        :root {
+            --bg-body: #f1f5f9; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1e293b; --text-sub: #64748b; --border-color: rgba(0, 0, 0, 0.1);
+            --juri-box-bg: rgba(0, 0, 0, 0.05); --shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --blue-gradient: linear-gradient(135deg, #0047bb 0%, #002f80 100%);
+            --red-gradient: linear-gradient(135deg, #d00000 0%, #8b0000 100%);
+            --active-gold: #f59e0b;
+            --color-jatuhan: #22c55e; --color-binaan: #64748b;
+            --color-teguran: #f59e0b; --color-peringatan: #000000;
+        }
+
+        body.dark-mode {
+            --bg-body: #000000; --bg-card: #111111; --bg-header: #111111;
+            --text-main: #ffffff; --text-sub: #94a3b8; --border-color: #333333;
+            --juri-box-bg: rgba(255, 255, 255, 0.1); --color-peringatan: #ffffff; 
+        }
+
+        html, body { height: 100vh; overflow: hidden; margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); padding: 12px; display: flex; flex-direction: column; }
+
+        .match-header { background: var(--bg-header); border: 2px solid var(--border-color); padding: 10px 20px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
+        .match-header h2 { margin: 0; font-size: 0.9rem; font-weight: 900; text-transform: uppercase; }
+
+        .monitor-container { display: grid; grid-template-columns: 1fr 180px 1fr; gap: 12px; margin-bottom: 12px; flex: 1; }
+        .side-monitor { padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-around; border-radius: 20px; color: white; border: 2px solid rgba(0,0,0,0.1); }
+        .blue-mon { background: var(--blue-gradient); }
+        .red-mon { background: var(--red-gradient); }
+        .score-val { font-size: 5rem; font-weight: 900; line-height: 1; }
+        
+        .center-mon { display: flex; flex-direction: column; gap: 8px; }
+        .timer-box { background: var(--bg-card); border-radius: 15px; border: 3px solid var(--text-main); padding: 8px; text-align: center; }
+        .timer-val { font-size: 2rem; font-weight: 900; }
+        
+        .var-section { background: var(--bg-card); border: 2px solid var(--active-gold); border-radius: 15px; padding: 10px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow); }
+        .var-label { font-size: 0.65rem; font-weight: 900; text-align: center; color: var(--active-gold); }
+        .btn-var { padding: 8px 2px; font-size: 0.6rem; font-weight: 900; border-radius: 6px; border: 1.5px solid #000; cursor: pointer; text-transform: uppercase; transition: 0.1s; box-shadow: 0 2px 0 #000;}
+        .var-blue { background: #3b82f6; color: white; }
+        .var-red { background: #ef4444; color: white; }
+
+        .grid-penalty { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1.3; }
+        .penalty-col { background: var(--bg-card); padding: 10px; border-radius: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border: 2px solid var(--border-color); align-content: start; }
+        
+        .btn-p { padding: 10px 2px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; border: 2px solid #000; cursor: pointer; text-transform: uppercase; box-shadow: 0 3px 0px #000; transition: 0.1s; }
+        .btn-p:active, .btn-var:active { transform: translateY(2px); box-shadow: 0 1px 0px #000; }
+        .full-w { grid-column: span 2; }
+        .btn-gold { background: var(--color-jatuhan); color: #000; }
+        .btn-binaan { background: var(--color-binaan); color: #fff; }
+        .btn-teguran { background: var(--color-teguran); color: #000; }
+        .btn-peringatan { background: var(--color-peringatan); color: var(--bg-card); }
+        
+        .btn-undo { background: transparent !important; border: 2px dashed var(--text-sub) !important; color: var(--text-sub) !important; font-size: 0.6rem; box-shadow: none !important; margin-top: 5px; }
+
+        .juri-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 100%; }
+        .juri-box { background: var(--juri-box-bg); height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .juri-box.active { background: var(--active-gold) !important; color: white !important; }
+        
+        .theme-toggle { background: var(--text-main); border: none; color: var(--bg-card); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+<div class="match-header">
+    <h2 id="infoPertandingan">DEWAN MATCH CONTROL</h2>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Mode Malam</button>
+</div>
+
+<div class="monitor-container">
+    <div class="side-monitor blue-mon">
+        <div class="player-name" id="nameBiru">-</div>
+        <div class="player-team" id="teamBiru">-</div>
+        <div class="score-val" id="scoreBiru">0</div>
+        <div class="juri-grid" id="gridBiru"></div>
+    </div>
+
+    <div class="center-mon">
+        <div class="timer-box">
+            <div class="timer-val" id="timerDisp">02:00</div>
+            <div style="font-size:0.6rem; font-weight:900;">ROUND <span id="roundDisp">I</span></div>
+        </div>
+        
+        <div class="var-section">
+            <div class="var-label">VAR VERIFICATION</div>
+            <button class="btn-var var-blue" onclick="mintaVerifikasi('Biru','Jatuhan',3)">Jatuhan B</button>
+            <button class="btn-var var-blue" onclick="mintaVerifikasi('Biru','Pelanggaran',-5)">Pelanggaran B</button>
+            <button class="btn-var var-red" onclick="mintaVerifikasi('Merah','Jatuhan',3)">Jatuhan R</button>
+            <button class="btn-var var-red" onclick="mintaVerifikasi('Merah','Pelanggaran',-5)">Pelanggaran R</button>
+            <div id="varStatus" style="font-size:0.55rem; text-align:center; color:var(--text-sub); font-weight: 800;">READY</div>
+        </div>
+    </div>
+
+    <div class="side-monitor red-mon">
+        <div class="player-name" id="nameMerah">-</div>
+        <div class="player-team" id="teamMerah">-</div>
+        <div class="score-val" id="scoreMerah">0</div>
+        <div class="juri-grid" id="gridMerah"></div>
+    </div>
+</div>
+
+<div class="grid-penalty">
+    <div class="penalty-col" style="border-color: #0047bb;">
+        <button class="btn-p full-w btn-gold" onclick="inputDewan('Biru','Jatuhan',3)">JATUHAN (+3)</button>
+        <button class="btn-p btn-binaan" onclick="inputDewan('Biru','Binaan 1',0)">BINAAN 1</button>
+        <button class="btn-p btn-binaan" onclick="inputDewan('Biru','Binaan 2',0)">BINAAN 2</button>
+        <button class="btn-p btn-teguran" onclick="inputDewan('Biru','Teguran 1',-1)">TEGURAN 1</button>
+        <button class="btn-p btn-teguran" onclick="inputDewan('Biru','Teguran 2',-2)">TEGURAN 2</button>
+        <button class="btn-p btn-peringatan" onclick="inputDewan('Biru','Peringatan 1',-5)">P1 (-5)</button>
+        <button class="btn-p btn-peringatan" onclick="inputDewan('Biru','Peringatan 2',-10)">P2 (-10)</button>
+        <button class="btn-p full-w btn-undo" onclick="hapusTerakhir('Biru')">UNDO BIRU</button>
+    </div>
+
+    <div class="penalty-col" style="border-color: #d00000;">
+        <button class="btn-p full-w btn-gold" onclick="inputDewan('Merah','Jatuhan',3)">JATUHAN (+3)</button>
+        <button class="btn-p btn-binaan" onclick="inputDewan('Merah','Binaan 1',0)">BINAAN 1</button>
+        <button class="btn-p btn-binaan" onclick="inputDewan('Merah','Binaan 2',0)">BINAAN 2</button>
+        <button class="btn-p btn-teguran" onclick="inputDewan('Merah','Teguran 1',-1)">TEGURAN 1</button>
+        <button class="btn-p btn-teguran" onclick="inputDewan('Merah','Teguran 2',-2)">TEGURAN 2</button>
+        <button class="btn-p btn-peringatan" onclick="inputDewan('Merah','Peringatan 1',-5)">P1 (-5)</button>
+        <button class="btn-p btn-peringatan" onclick="inputDewan('Merah','Peringatan 2',-10)">P2 (-10)</button>
+        <button class="btn-p full-w btn-undo" onclick="hapusTerakhir('Merah')">UNDO MERAH</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+    const firebaseConfig = { 
+        apiKey: "AIzaSyA3j2oiLNm2u6p5KiO1aNv-SqGq97Vul4s", 
+        databaseURL: "https://silat-scoring-a3f53-default-rtdb.firebaseio.com", 
+        projectId: "silat-scoring-a3f53" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('dewan-theme', isDark ? 'dark' : 'light');
+        document.getElementById('themeBtn').innerText = isDark ? "☀️ Mode Terang" : "🌙 Mode Malam";
+    }
+    if(localStorage.getItem('dewan-theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeBtn').innerText = "☀️ Mode Terang";
+    }
+
+    // --- LOGIKA VAR ---
+    function mintaVerifikasi(sudut, aksi, poin) {
+        if(!confirm(`Minta verifikasi Juri untuk ${aksi} ${sudut}?`)) return;
+        
+        db.ref('verifikasi_aktif').set({
+            sudut: sudut, 
+            aksi: aksi, 
+            poin: poin,
+            votes: { j1: null, j2: null, j3: null } // Struktur wajib null agar terdeteksi juri
+        });
+        document.getElementById('varStatus').innerText = "WAJIB: JURI KONFIRMASI!";
+        document.getElementById('varStatus').style.color = "#f59e0b";
+    }
+
+    db.ref('verifikasi_aktif/votes').on('value', snap => {
+        const v = snap.val();
+        if(!v) { 
+            document.getElementById('varStatus').innerText = "READY"; 
+            document.getElementById('varStatus').style.color = "var(--text-sub)";
+            return; 
+        }
+        
+        const votes = Object.values(v).filter(x => x !== null);
+        const setuju = votes.filter(x => x === true).length;
+        const tidak = votes.filter(x => x === false).length;
+
+        document.getElementById('varStatus').innerText = `VOTES: ${votes.length}/3`;
+
+        if(setuju >= 2) {
+            db.ref('verifikasi_aktif').once('value', s => {
+                const d = s.val();
+                inputDewan(d.sudut, d.aksi + " (VAR)", d.poin);
+                db.ref('verifikasi_aktif').remove();
+                alert("VAR DISAHKAN (Mayoritas Setuju)");
+            });
+        } else if(tidak >= 2) {
+            db.ref('verifikasi_aktif').remove();
+            alert("VAR DIBATALKAN (Mayoritas Tidak Setuju)");
+        }
+    });
+
+    ['Biru', 'Merah'].forEach(s => {
+        const grid = document.getElementById('grid' + s);
+        for(let j=1; j<=3; j++) grid.innerHTML += `<div id="box-${s}-pukul-${j}" class="juri-box">J${j}-PKL</div>`;
+        for(let j=1; j<=3; j++) grid.innerHTML += `<div id="box-${s}-tendang-${j}" class="juri-box">J${j}-TDN</div>`;
+    });
+
+    db.ref('match_info').on('value', snap => {
+        const d = snap.val(); if(!d) return;
+        document.getElementById('infoPertandingan').innerText = `${d.kelas || '-'} | PARTAI ${d.partai || '0'}`;
+        document.getElementById('nameBiru').innerText = d.namaBiru || '-';
+        document.getElementById('teamBiru').innerText = d.timBiru || '-';
+        document.getElementById('nameMerah').innerText = d.namaMerah || '-';
+        document.getElementById('teamMerah').innerText = d.timMerah || '-';
+    });
+
+    db.ref('match_status').on('value', snap => {
+        const d = snap.val(); if(!d) return;
+        let m = Math.floor(d.timeLeft/60), s = d.timeLeft%60;
+        document.getElementById('timerDisp').innerText = `${m}:${s.toString().padStart(2,'0')}`;
+        document.getElementById('roundDisp').innerText = ["","I","II","III"][d.round] || "-";
+    });
+
+    db.ref('score').on('value', snap => {
+        const d = snap.val() || { Biru: 0, Merah: 0 };
+        document.getElementById('scoreBiru').innerText = d.Biru;
+        document.getElementById('scoreMerah').innerText = d.Merah;
+    });
+
+    db.ref('log_wasit').limitToLast(1).on('child_added', snap => {
+        const d = snap.val();
+        const box = document.getElementById(`box-${d.sudut}-${d.aksi}-${d.wasit}`);
+        if(box) {
+            box.classList.add('active');
+            setTimeout(() => box.classList.remove('active'), 1200);
+        }
+    });
+
+    function inputDewan(sudut, aksi, poin) {
+        db.ref(`score/${sudut}`).transaction(c => (c || 0) + poin);
+        db.ref('log_dewan').push({ sudut, aksi, poin, waktu: firebase.database.ServerValue.TIMESTAMP });
+    }
+
+    function hapusTerakhir(sudut) {
+        if(!confirm(`UNDO: Batalkan poin terakhir Sudut ${sudut}?`)) return;
+        db.ref('log_dewan').orderByChild('sudut').equalTo(sudut).limitToLast(1).once('value', snap => {
+            snap.forEach(child => {
+                db.ref(`score/${sudut}`).transaction(c => (c || 0) - child.val().poin);
+                child.ref.remove();
+            });
+        });
+    }
+</script>
+</body>
+</html>

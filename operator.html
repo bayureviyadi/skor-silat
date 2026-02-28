@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Control</title>
+    <style>
+        :root {
+            /* Mode Terang (Fresh & Clean) */
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --accent-blue: #0047bb;
+            --accent-red: #d00000;
+            --accent-green: #16a34a;
+            --accent-gold: #fbbf24;
+            --border-bold: #0f172a;
+            --input-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            /* Mode Malam Baru (Soft Dark / Deep Navy) */
+            --bg-body: #0f172a;        /* Navy gelap yang dalam */
+            --bg-card: #1e293b;        /* Slate navy yang lembut */
+            --text-main: #f1f5f9;      /* Putih kusam agar tidak silau */
+            --text-sub: #94a3b8;       /* Abu-abu kebiruan */
+            --accent-blue: #38bdf8;    /* Biru neon lembut */
+            --accent-red: #fb7185;     /* Merah pastel tajam */
+            --accent-green: #4ade80;   /* Hijau cerah tapi soft */
+            --accent-gold: #fbbf24;    /* Emas tetap solid */
+            --border-bold: #334155;    /* Border tidak putih murni agar mata rileks */
+            --input-bg: #0f172a;       /* Input lebih gelap dari card */
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* CARD STYLE */
+        .card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-bold);
+            padding: 15px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* HEADER DENGAN TOMBOL MODE */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--border-bold);
+            margin: -15px -15px 15px -15px;
+            padding: 8px 15px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #ffffff; /* Selalu putih di header agar kontras */
+        }
+
+        .theme-switcher {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 4px 10px;
+            font-weight: 900;
+            font-size: 0.65rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            border-radius: 2px;
+        }
+
+        /* GRID SYSTEM */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .full { grid-column: span 2; }
+
+        label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 900;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-sub);
+        }
+
+        input {
+            width: 100%;
+            padding: 8px 10px;
+            background: var(--input-bg);
+            border: 2px solid var(--border-bold);
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        /* LIVE SCORE SECTION */
+        .score-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .score-box {
+            border: 2px solid var(--border-bold);
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+        .score-blue { background: var(--accent-blue); color: #0f172a; } /* Text gelap di bg terang */
+        .score-red { background: var(--accent-red); color: #0f172a; }
+        
+        body.dark-mode .score-blue, body.dark-mode .score-red { color: #0f172a; font-weight: 900; }
+
+        .score-val { font-size: 3.5rem; font-weight: 900; line-height: 1; }
+        .score-tag { font-size: 0.65rem; font-weight: 900; margin-bottom: 2px; text-transform: uppercase; }
+
+        /* TIMER AREA */
+        .timer-display {
+            font-size: 5rem;
+            font-weight: 900;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin: 5px 0;
+            color: var(--text-main);
+            letter-spacing: -2px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            border: 2px solid var(--border-bold);
+            cursor: pointer;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 12px;
+            font-size: 0.8rem;
+            transition: 0.1s;
+        }
+        .btn:active { transform: translate(2px, 2px); }
+
+        .btn-save {
+            background: var(--accent-gold);
+            color: #000;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 4px 4px 0px var(--border-bold);
+        }
+
+        .time-select { display: flex; gap: 5px; margin-bottom: 10px; }
+        .btn-time { background: var(--bg-card); color: var(--text-main); flex: 1; font-size: 0.7rem; }
+        .btn-time.active { background: var(--border-bold); color: #fff; }
+
+        .btn-start { background: var(--accent-green); color: #000; flex: 1; font-size: 1.5rem; box-shadow: 4px 4px 0px var(--border-bold); }
+        .btn-stop { background: var(--accent-red); color: #fff; flex: 1; font-size: 1.5rem; box-shadow: 4px 4px 0px var(--border-bold); }
+
+        .round-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+        .btn-rd { background: var(--bg-card); color: var(--text-main); }
+        .btn-rd.active { background: var(--accent-gold); color: #000; border-color: var(--border-bold); }
+
+        .btn-reset {
+            background: transparent;
+            color: var(--text-sub);
+            grid-column: span 3;
+            margin-top: 15px;
+            font-size: 0.65rem;
+            border: 1px dashed var(--text-sub);
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header-section">
+        <h2>IDENTITAS PERTANDINGAN</h2>
+        <button class="theme-switcher" onclick="toggleTheme()" id="themeBtn">🌙 MODE MALAM</button>
+    </div>
+    <div class="grid">
+        <div class="full"><label>KATEGORI KELAS / POOL</label><input type="text" id="kelas"></div>
+        <div class="full"><label>NOMOR PARTAI</label><input type="number" id="partai"></div>
+        <div><label>NAMA BIRU</label><input type="text" id="namaBiru"></div>
+        <div><label>KONTINGEN BIRU</label><input type="text" id="timBiru"></div>
+        <div><label>NAMA MERAH</label><input type="text" id="namaMerah"></div>
+        <div><label>KONTINGEN MERAH</label><input type="text" id="timMerah"></div>
+    </div>
+    <button class="btn btn-save" onclick="updateIdentity()">SIMPAN DATA PERTANDINGAN</button>
+</div>
+
+<div class="score-row">
+    <div class="score-box score-blue">
+        <div class="score-tag">SUDUT BIRU</div>
+        <div class="score-val" id="liveScoreBiru">0</div>
+    </div>
+    <div class="score-box score-red">
+        <div class="score-tag">SUDUT MERAH</div>
+        <div class="score-val" id="liveScoreMerah">0</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="header-section">
+        <h2>KONTROL PERTANDINGAN</h2>
+    </div>
+    <div class="time-select">
+        <button class="btn btn-time" id="t60" onclick="setDuration(60)">1 MIN</button>
+        <button class="btn btn-time" id="t90" onclick="setDuration(90)">1.5 MIN</button>
+        <button class="btn btn-time active" id="t120" onclick="setDuration(120)">2 MIN</button>
+    </div>
+
+    <div class="timer-display" id="timerDisp">02:00</div>
+    <div style="text-align:center; font-weight:900; margin-bottom:15px; font-size:1.2rem;">RONDE <span id="roundLabel">I</span></div>
+    
+    <div style="display:flex; gap:10px;">
+        <button class="btn btn-start" onclick="toggleTimer()" id="btnStart">START</button>
+        <button class="btn btn-stop" onclick="toggleTimer()" id="btnStop" style="display:none;">STOP</button>
+    </div>
+
+    <div class="round-btns">
+        <button class="btn btn-rd" id="rd1" onclick="setRound(1)">RD 1</button>
+        <button class="btn btn-rd" id="rd2" onclick="setRound(2)">RD 2</button>
+        <button class="btn btn-rd" id="rd3" onclick="setRound(3)">RD 3</button>
+        <button class="btn btn-reset" onclick="resetMatch()">RESET MATCH DATA</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+    const firebaseConfig = { 
+        apiKey: "AIzaSyA3j2oiLNm2u6p5KiO1aNv-SqGq97Vul4s", 
+        databaseURL: "https://silat-scoring-a3f53-default-rtdb.firebaseio.com", 
+        projectId: "silat-scoring-a3f53" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let localTime = 120;
+    let isRunning = false;
+    let selectedDuration = 120;
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('silat-theme-op', isDark ? 'dark' : 'light');
+        document.getElementById('themeBtn').innerText = isDark ? "☀️ MODE TERANG" : "🌙 MODE MALAM";
+    }
+    
+    if(localStorage.getItem('silat-theme-op') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeBtn').innerText = "☀️ MODE TERANG";
+    }
+
+    db.ref('score').on('value', snap => {
+        const d = snap.val() || { Biru: 0, Merah: 0 };
+        document.getElementById('liveScoreBiru').innerText = d.Biru;
+        document.getElementById('liveScoreMerah').innerText = d.Merah;
+    });
+
+    db.ref('match_info').on('value', snap => {
+        const d = snap.val();
+        if(d) {
+            document.getElementById('kelas').value = d.kelas || '';
+            document.getElementById('partai').value = d.partai || '';
+            document.getElementById('namaBiru').value = d.namaBiru || '';
+            document.getElementById('timBiru').value = d.timBiru || '';
+            document.getElementById('namaMerah').value = d.namaMerah || '';
+            document.getElementById('timMerah').value = d.timMerah || '';
+        }
+    });
+
+    db.ref('match_status').on('value', snap => {
+        const d = snap.val();
+        if(!d) return;
+        localTime = d.timeLeft;
+        isRunning = d.isRunning;
+        document.getElementById('timerDisp').innerText = formatWaktu(localTime);
+        document.getElementById('btnStart').style.display = isRunning ? 'none' : 'inline-block';
+        document.getElementById('btnStop').style.display = isRunning ? 'inline-block' : 'none';
+        document.getElementById('roundLabel').innerText = ["", "I", "II", "III"][d.round] || "-";
+        document.querySelectorAll('.btn-rd').forEach(btn => btn.classList.remove('active'));
+        if(document.getElementById('rd' + d.round)) document.getElementById('rd' + d.round).classList.add('active');
+    });
+
+    function setDuration(seconds) {
+        selectedDuration = seconds;
+        document.querySelectorAll('.btn-time').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('t' + seconds).classList.add('active');
+        if(!isRunning) {
+            localTime = seconds;
+            db.ref('match_status').update({ timeLeft: seconds });
+        }
+    }
+
+    function updateIdentity() {
+        db.ref('match_info').update({
+            kelas: document.getElementById('kelas').value,
+            partai: document.getElementById('partai').value,
+            namaBiru: document.getElementById('namaBiru').value,
+            timBiru: document.getElementById('timBiru').value,
+            namaMerah: document.getElementById('namaMerah').value,
+            timMerah: document.getElementById('timMerah').value
+        });
+        alert("DATA TERSIMPAN!");
+    }
+
+    function formatWaktu(t) {
+        let m = Math.floor(t/60);
+        let s = t % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function toggleTimer() { db.ref('match_status/isRunning').set(!isRunning); }
+    function setRound(r) { db.ref('match_status').update({ round: r, timeLeft: selectedDuration, isRunning: false }); }
+    
+    function resetMatch() {
+        if(confirm("RESET TOTAL MATCH?")) {
+            db.ref().update({
+                match_status: { timeLeft: selectedDuration, isRunning: false, round: 1 },
+                score: { Biru: 0, Merah: 0 },
+                log_wasit: null,
+                log_dewan: null
+            });
+        }
+    }
+
+    setInterval(() => {
+        if (isRunning && localTime > 0) {
+            localTime--;
+            db.ref('match_status/timeLeft').set(localTime);
+            if (localTime <= 0) db.ref('match_status/isRunning').set(false);
+        }
+    }, 1000);
+</script>
+</body>
+</html>

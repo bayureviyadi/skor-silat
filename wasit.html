@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Juri</title>
+    <style>
+        :root {
+            --bg-body: #f1f5f9; --bg-info: #1e293b; --text-main: #0f172a;
+            --text-sub: #475569; --side-b-bg: #e3f2fd; --side-r-bg: #ffebee;
+            --border-col: #0f172a; --btn-b-1: #0047bb; --btn-b-2: #1e40af;
+            --btn-r-1: #d00000; --btn-r-2: #991b1b;
+        }
+
+        body.dark-mode {
+            --bg-body: #0f172a; --bg-info: #020617; --text-main: #f1f5f9;
+            --text-sub: #94a3b8; --side-b-bg: #1e293b; --side-r-bg: #1e293b;
+            --border-col: #334155; --btn-b-1: #38bdf8; --btn-b-2: #0284c7;
+            --btn-r-1: #fb7185; --btn-r-2: #be123c;
+        }
+
+        body { 
+            margin: 0; font-family: 'Inter', sans-serif; height: 100vh; 
+            display: flex; flex-direction: column; overflow: hidden; 
+            background: var(--bg-body); color: var(--text-main);
+            transition: border 0.3s;
+        }
+        
+        .info-bar {
+            background: var(--bg-info); padding: 8px 12px; border-bottom: 2px solid var(--border-col);
+            display: flex; justify-content: space-between; align-items: center; 
+            font-size: 0.75rem; color: #fff;
+        }
+        .partai-badge { background: #fbbf24; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: 900; }
+
+        .atlet-header { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid var(--border-col); }
+        .atlet-card { padding: 8px 5px; text-align: center; color: white; }
+        .atlet-card.b { background: #0047bb; }
+        .atlet-card.r { background: #d00000; }
+        .atlet-nama { font-weight: 900; font-size: 0.85rem; display: block; }
+
+        .container { flex: 1; display: flex; gap: 10px; padding: 10px; }
+        .side-wrapper { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .side { flex: 1; display: flex; flex-direction: column; gap: 12px; border-radius: 12px; padding: 12px; border: 2px solid var(--border-col); background: var(--side-b-bg); }
+        .red-side { background: var(--side-r-bg); }
+        
+        .btn { 
+            flex: 1; border: none; border-radius: 12px; color: white; 
+            font-size: 2.8rem; font-weight: 900; cursor: pointer;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.3); display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; transition: transform 0.05s;
+        }
+        .btn span { font-size: 0.7rem; margin-top: 5px; font-weight: 600; }
+        .blue-side .btn-p { background: var(--btn-b-1); } .blue-side .btn-t { background: var(--btn-b-2); }
+        .red-side .btn-p { background: var(--btn-r-1); } .red-side .btn-t { background: var(--btn-r-2); }
+        .btn:active { transform: translateY(4px); box-shadow: none; filter: brightness(1.2); }
+
+        .undo-btn { padding: 12px; border: 2px solid var(--border-col); border-radius: 8px; font-weight: 800; font-size: 0.7rem; color: var(--text-main); background: var(--bg-body); cursor: pointer; }
+        .footer { background: var(--bg-info); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: #fff; }
+        .theme-btn { background: #fbbf24; border: none; color: #000; padding: 5px 10px; border-radius: 4px; font-weight: 900; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 5px; }
+        .dot.online { background: #22c55e; box-shadow: 0 0 5px #22c55e; }
+        
+        /* Animasi kedip untuk VAR */
+        @keyframes blink-var {
+            0% { border-color: #f59e0b; }
+            50% { border-color: transparent; }
+            100% { border-color: #f59e0b; }
+        }
+        .var-alert { border: 10px solid #f59e0b !important; animation: blink-var 0.5s infinite; }
+    </style>
+</head>
+<body onclick="enableAudio()"> <div class="info-bar">
+    <div id="juriId" style="font-weight: 900;">JURI ?</div>
+    <div class="partai-badge">PARTAI <span id="partaiDisp">-</span></div>
+    <div style="font-weight: 900;">RD <span id="roundDisp">1</span></div>
+</div>
+
+<div class="atlet-header">
+    <div class="atlet-card b"><span class="atlet-nama" id="namaBiru">BIRU</span></div>
+    <div class="atlet-card r"><span class="atlet-nama" id="namaMerah">MERAH</span></div>
+</div>
+
+<div class="container">
+    <div class="side-wrapper">
+        <div class="side blue-side">
+            <button class="btn btn-p" onclick="kirim('Biru', 'pukul')">1<span>PUKUL</span></button>
+            <button class="btn btn-t" onclick="kirim('Biru', 'tendang')">2<span>TENDANG</span></button>
+        </div>
+        <button class="undo-btn" id="undoB" onclick="undo('Biru')" disabled>Undo Biru</button>
+    </div>
+    <div class="side-wrapper">
+        <div class="side red-side">
+            <button class="btn btn-p" onclick="kirim('Merah', 'pukul')">1<span>PUKUL</span></button>
+            <button class="btn btn-t" onclick="kirim('Merah', 'tendang')">2<span>TENDANG</span></button>
+        </div>
+        <button class="undo-btn" id="undoR" onclick="undo('Merah')" disabled>Undo Merah</button>
+    </div>
+</div>
+
+<div class="footer">
+    <div><span id="connDot" class="dot"></span><span id="connText">OFFLINE</span></div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 MODE MALAM</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+    const firebaseConfig = { 
+        apiKey: "AIzaSyA3j2oiLNm2u6p5KiO1aNv-SqGq97Vul4s", 
+        databaseURL: "https://silat-scoring-a3f53-default-rtdb.firebaseio.com", 
+        projectId: "silat-scoring-a3f53" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const idJuri = urlParams.get('id') || "1";
+    document.getElementById('juriId').innerText = "JURI " + idJuri;
+
+    let lastKeys = { Biru: null, Merah: null };
+
+    // --- LOGIKA VAR ---
+    db.ref('verifikasi_aktif').on('value', snap => {
+        const v = snap.val();
+        if (!v) {
+            document.body.classList.remove('var-alert');
+            return;
+        }
+
+        if (v.votes && v.votes['j' + idJuri] === null) {
+            document.body.classList.add('var-alert');
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+            setTimeout(() => {
+                const msg = `⚠️ PERMINTAAN VAR ⚠️\n\nAKSI: ${v.aksi}\nSUDUT: ${v.sudut}\n\nSAH? (OK=Ya, Cancel=Tidak)`;
+                const hasil = confirm(msg);
+                db.ref(`verifikasi_aktif/votes/j${idJuri}`).set(hasil);
+                document.body.classList.remove('var-alert');
+            }, 100);
+        }
+    });
+
+    function enableAudio() { console.log("User Interaction Detected"); }
+
+    function kirim(sudut, aksi) {
+        db.ref('match_status/round').once('value', snap => {
+            const rd = snap.val() || 1;
+            const ref = db.ref('log_wasit').push();
+            lastKeys[sudut] = ref.key;
+            document.getElementById(sudut === 'Biru' ? 'undoB' : 'undoR').disabled = false;
+            ref.set({ wasit: idJuri, sudut: sudut, aksi: aksi, ronde: rd, waktu: firebase.database.ServerValue.TIMESTAMP });
+        });
+        if (navigator.vibrate) navigator.vibrate(50);
+    }
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('silat-theme', isDark ? 'dark' : 'light');
+    }
+
+    db.ref(".info/connected").on("value", snap => {
+        document.getElementById('connDot').className = snap.val() ? 'dot online' : 'dot';
+        document.getElementById('connText').innerText = snap.val() ? 'CONNECTED' : 'OFFLINE';
+    });
+
+    db.ref('match_info').on('value', snap => {
+        const d = snap.val();
+        if(d) {
+            document.getElementById('namaBiru').innerText = d.namaBiru || 'BIRU';
+            document.getElementById('namaMerah').innerText = d.namaMerah || 'MERAH';
+            document.getElementById('partaiDisp').innerText = d.partai || '-';
+        }
+    });
+
+    function undo(sudut) {
+        const key = lastKeys[sudut];
+        if (key && confirm("Hapus poin " + sudut + "?")) {
+            db.ref('log_wasit').child(key).remove().then(() => {
+                lastKeys[sudut] = null;
+                document.getElementById(sudut === 'Biru' ? 'undoB' : 'undoR').disabled = true;
+            });
+        }
+    }
+</script>
+</body>
+</html>

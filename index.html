@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor Skor Pencak Silat</title>
+    <style>
+        :root {
+            --font-main: 'Segoe UI', Roboto, sans-serif;
+            --font-timer: 'Courier New', monospace;
+            --score-size: 18rem;
+            --bg-body: #f0f2f5;
+            --text-color: #2c3e50;
+            --header-bg: #ffffff;
+            --accent: #ffb300;
+        }
+
+        /* =========================================
+           1. TEMA BUDAYA (TRADISIONAL MODERN)
+           ========================================= */
+        .mode-budaya {
+            --bg-body: #ffff; /* Old Lace */
+            --text-color: #fff;
+            --header-bg: #111;
+            --accent: #ffb300;
+        }
+        .mode-budaya .side { border: 8px double #ffffff55; border-radius: 0; }
+        .mode-budaya .blue-side { background: #0d47a1; position: relative; }
+        .mode-budaya .red-side { background: #b71c1c; }
+        /* Ornamen batik/ukiran sederhana via pseudo-element bisa ditambahkan di sini */
+
+        /* =========================================
+           2. TEMA DEEP SPACE (MODE MALAM PREMIUM)
+           ========================================= */
+        .mode-malam-premium {
+            --bg-body: #020617;
+            --text-color: #f8fafc;
+            --header-bg: #0f172a;
+            --accent: #38bdf8;
+        }
+        .mode-malam-premium .timer { background: #1e293b; color: #38bdf8; border-color: #334155; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .mode-malam-premium .side { border: 1px solid #334155; box-shadow: none; }
+        .mode-malam-premium .blue-side { background: linear-gradient(180deg, #1e3a8a, #020617); }
+        .mode-malam-premium .red-side { background: linear-gradient(180deg, #7f1d1d, #020617); }
+
+        /* =========================================
+           3. TEMA SPORTY NEON (HIGH CONTRAST)
+           ========================================= */
+        .mode-sporty {
+            --bg-body: #111;
+            --text-color: #fff;
+            --header-bg: #222;
+            --accent: #ccff00; /* Lime Neon */
+        }
+        .mode-sporty .player-name { font-style: italic; font-family: 'Arial Black', sans-serif; }
+        .mode-sporty .timer { background: #000; color: #ccff00; border: 4px solid #ccff00; border-radius: 0; }
+        .mode-sporty .round-num { border-radius: 0; background: #ccff00; color: #000; }
+        .mode-sporty .blue-side { background: #001eff; border-radius: 0; clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); }
+        .mode-sporty .red-side { background: #ff0000; border-radius: 0; clip-path: polygon(5% 0, 100% 0, 100% 100%, 0% 100%); }
+
+        /* DASAR LAYOUT */
+        body { 
+            background: var(--bg-body); color: var(--text-color); font-family: var(--font-main); 
+            margin: 0; padding: 20px; overflow: hidden; transition: all 0.4s ease;
+        }
+
+        .header { display: flex; justify-content: space-between; background: var(--header-bg); padding: 15px 25px; border-radius: 12px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); align-items: center; }
+        .partai-box { background: var(--accent); color: #000; padding: 5px 15px; border-radius: 6px; font-size: 1.2rem; }
+
+        .scoreboard { display: grid; grid-template-columns: 1fr 250px 1fr; gap: 20px; align-items: center; margin-top: 20px; }
+        
+        .side { 
+            border-radius: 20px; padding: 30px; text-align: center; 
+            min-height: 450px; color: white; display: flex; flex-direction: column; 
+            justify-content: center; position: relative; border: 6px solid #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: all 0.4s ease;
+        }
+
+        .blue-side { background: linear-gradient(135deg, #0047bb, #0056b3); }
+        .red-side { background: linear-gradient(135deg, #d00000, #b33939); }
+
+        .player-name { font-size: 3rem; font-weight: 900; text-transform: uppercase; margin: 0; }
+        .team-name { font-size: 1.4rem; opacity: 0.9; font-weight: 500; margin-bottom: 10px; }
+        .score { font-size: var(--score-size); font-weight: 900; line-height: 1; margin: 0; }
+
+        .timer { font-size: 5rem; font-weight: bold; font-family: var(--font-timer); background: #fff; color: #222; padding: 15px; border-radius: 15px; border: 4px solid #ddd; text-align: center; }
+        .round-num { font-size: 3.5rem; background: #2ed573; color: white; padding: 10px 40px; border-radius: 15px; font-weight: 900; display: inline-block; margin-top: 15px; }
+
+        #victoryOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1000; cursor: pointer; text-align: center; color: white;
+        }
+        .win-name { font-size: 8rem; font-weight: 900; text-transform: uppercase; }
+        .hidden-theme-trigger { position: fixed; bottom: 5px; right: 5px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; z-index: 9999; }
+    </style>
+</head>
+<body id="mainBody">
+
+<div id="victoryOverlay" onclick="this.style.display='none'">
+    <p style="font-size: 3rem; font-weight: bold;">PEMENANG</p>
+    <h1 id="winnerName" class="win-name">BIRU</h1>
+</div>
+
+<div class="header">
+    <div id="dispKelas" style="font-size: 1.2rem;">KELAS ...</div>
+    <div class="partai-box">PARTAI <span id="dispPartai">0</span></div>
+    <div style="font-size: 1.2rem;">SERA CHAMPIONSHIP</div>
+</div> 
+
+<div class="scoreboard">
+    <div class="side blue-side" onclick="showVictory('Biru')">
+        <div class="team-name" id="dispTimBiru">KONTINGEN</div>
+        <div class="player-name" id="dispNamaBiru">PESILAT BIRU</div>
+        <div class="score" id="scoreBiru">0</div>
+    </div>
+
+    <div class="center-col" style="text-align: center;">
+        <div class="timer" id="timerDisplay">02:00</div>
+        <div>
+            <div style="font-weight: bold; opacity: 0.7; margin-top: 20px;">RONDE</div>
+            <div class="round-num" id="roundDisplay">I</div>
+        </div>
+    </div>
+
+    <div class="side red-side" onclick="showVictory('Merah')">
+        <div class="team-name" id="dispTimMerah">KONTINGEN</div>
+        <div class="player-name" id="dispNamaMerah">PESILAT MERAH</div>
+        <div class="score" id="scoreMerah">0</div>
+    </div>
+</div>
+
+<button class="hidden-theme-trigger" onclick="cycleTheme()"></button>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    const firebaseConfig = { 
+        apiKey: "AIzaSyA3j2oiLNm2u6p5KiO1aNv-SqGq97Vul4s", 
+        databaseURL: "https://silat-scoring-a3f53-default-rtdb.firebaseio.com", 
+        projectId: "silat-scoring-a3f53" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // SINKRONISASI DATA (Match Info, Status, Score, Log)
+    db.ref('match_info').on('value', snap => {
+        const d = snap.val();
+        if(!d) return;
+        document.getElementById('dispKelas').innerText = d.kelas || 'KELAS ...';
+        document.getElementById('dispPartai').innerText = d.partai || '0';
+        document.getElementById('dispNamaBiru').innerText = d.namaBiru || 'BIRU';
+        document.getElementById('dispTimBiru').innerText = d.timBiru || 'KONTINGEN';
+        document.getElementById('dispNamaMerah').innerText = d.namaMerah || 'MERAH';
+        document.getElementById('dispTimMerah').innerText = d.timMerah || 'KONTINGEN';
+    });
+
+    db.ref('match_status').on('value', snap => {
+        const d = snap.val();
+        if(!d) return;
+        document.getElementById('roundDisplay').innerText = ["","I","II","III"][d.round] || "I";
+        let m = Math.floor(d.timeLeft / 60), s = d.timeLeft % 60;
+        document.getElementById('timerDisplay').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    });
+
+    db.ref('score').on('value', snap => {
+        const d = snap.val() || { Biru: 0, Merah: 0 };
+        document.getElementById('scoreBiru').innerText = d.Biru;
+        document.getElementById('scoreMerah').innerText = d.Merah;
+    });
+
+    // LOGIKA POINT OTOMATIS
+    let actionQueue = [];
+    db.ref('log_wasit').on('child_added', snap => {
+        const d = snap.val();
+        actionQueue.push(d);
+        const same = actionQueue.filter(item => 
+            item.sudut === d.sudut && 
+            item.aksi === d.aksi && 
+            Math.abs(d.waktu - item.waktu) <= 2000
+        );
+        const uniqueJudges = [...new Set(same.map(i => i.wasit))];
+        if (uniqueJudges.length >= 2) {
+            const poin = (d.aksi === 'pukul' ? 1 : 2);
+            db.ref(`score/${d.sudut}`).transaction(c => (c || 0) + poin);
+            actionQueue = actionQueue.filter(item => !(item.sudut === d.sudut && item.aksi === d.aksi));
+        }
+    });
+
+    // FUNGSI GANTI TEMA
+    let idx = 0;
+    const themes = ['default', 'mode-budaya', 'mode-malam-premium', 'mode-sporty'];
+    function cycleTheme() {
+        idx = (idx + 1) % themes.length;
+        document.getElementById('mainBody').className = themes[idx];
+        console.log("Current Theme:", themes[idx]);
+    }
+
+    function showVictory(corner) {
+        const overlay = document.getElementById('victoryOverlay');
+        document.getElementById('winnerName').innerText = corner;
+        overlay.style.display = 'flex';
+        overlay.style.background = corner === 'Biru' ? 'radial-gradient(circle, #1e90ff, #001970)' : 'radial-gradient(circle, #ff4757, #5f0000)';
+    }
+</script>
+</body>
+</html>
