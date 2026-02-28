@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Monitor Skor Pencak Silat</title>
+    <title>Monitor Skor Pencak Silat - Ultra Themes</title>
     <style>
         :root {
             --font-main: 'Segoe UI', Roboto, sans-serif;
@@ -15,21 +15,23 @@
         }
 
         /* =========================================
-           1. TEMA BUDAYA (TRADISIONAL MODERN)
+           1. TEMA ROYALTY (MEWAH)
            ========================================= */
-        .mode-budaya {
-            --bg-body: #ffff; /* Old Lace */
-            --text-color: #fff;
-            --header-bg: #111;
-            --accent: #ffb300;
+        .mode-royalty {
+            --bg-body: #0f0f0f;
+            --text-color: #f3e5f5;
+            --header-bg: #1a1a1a;
+            --accent: #d4af37; /* Gold */
         }
-        .mode-budaya .side { border: 8px double #ffffff55; border-radius: 0; }
-        .mode-budaya .blue-side { background: #0d47a1; position: relative; }
-        .mode-budaya .red-side { background: #b71c1c; }
-        /* Ornamen batik/ukiran sederhana via pseudo-element bisa ditambahkan di sini */
+        .mode-royalty .side { border: 4px solid var(--accent); border-radius: 0; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
+        .mode-royalty .blue-side { background: radial-gradient(circle, #002366, #000); }
+        .mode-royalty .red-side { background: radial-gradient(circle, #800000, #000); }
+        .mode-royalty .score { color: var(--accent); text-shadow: 0 0 30px rgba(212, 175, 55, 0.5); font-family: 'Times New Roman', serif; }
+        .mode-royalty .timer { background: #1a1a1a; color: var(--accent); border: 2px solid var(--accent); border-radius: 0; }
+        .mode-royalty .round-num { background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 0; }
 
         /* =========================================
-           2. TEMA DEEP SPACE (MODE MALAM PREMIUM)
+           2. TEMA DEEP SPACE (MODE MALAM)
            ========================================= */
         .mode-malam-premium {
             --bg-body: #020617;
@@ -37,30 +39,28 @@
             --header-bg: #0f172a;
             --accent: #38bdf8;
         }
-        .mode-malam-premium .timer { background: #1e293b; color: #38bdf8; border-color: #334155; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
-        .mode-malam-premium .side { border: 1px solid #334155; box-shadow: none; }
+        .mode-malam-premium .timer { background: #1e293b; color: #38bdf8; border-color: #334155; }
         .mode-malam-premium .blue-side { background: linear-gradient(180deg, #1e3a8a, #020617); }
         .mode-malam-premium .red-side { background: linear-gradient(180deg, #7f1d1d, #020617); }
 
         /* =========================================
-           3. TEMA SPORTY NEON (HIGH CONTRAST)
+           3. TEMA SPORTY NEON
            ========================================= */
         .mode-sporty {
-            --bg-body: #111;
+            --bg-body: #000;
             --text-color: #fff;
-            --header-bg: #222;
-            --accent: #ccff00; /* Lime Neon */
+            --header-bg: #111;
+            --accent: #ccff00;
         }
-        .mode-sporty .player-name { font-style: italic; font-family: 'Arial Black', sans-serif; }
-        .mode-sporty .timer { background: #000; color: #ccff00; border: 4px solid #ccff00; border-radius: 0; }
-        .mode-sporty .round-num { border-radius: 0; background: #ccff00; color: #000; }
+        .mode-sporty .timer { background: #000; color: var(--accent); border: 4px solid var(--accent); border-radius: 0; font-style: italic; }
+        .mode-sporty .round-num { border-radius: 0; background: var(--accent); color: #000; transform: skewX(-10deg); }
         .mode-sporty .blue-side { background: #001eff; border-radius: 0; clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); }
         .mode-sporty .red-side { background: #ff0000; border-radius: 0; clip-path: polygon(5% 0, 100% 0, 100% 100%, 0% 100%); }
 
         /* DASAR LAYOUT */
         body { 
             background: var(--bg-body); color: var(--text-color); font-family: var(--font-main); 
-            margin: 0; padding: 20px; overflow: hidden; transition: all 0.4s ease;
+            margin: 0; padding: 20px; overflow: hidden; transition: all 0.5s ease;
         }
 
         .header { display: flex; justify-content: space-between; background: var(--header-bg); padding: 15px 25px; border-radius: 12px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); align-items: center; }
@@ -79,7 +79,7 @@
         .red-side { background: linear-gradient(135deg, #d00000, #b33939); }
 
         .player-name { font-size: 3rem; font-weight: 900; text-transform: uppercase; margin: 0; }
-        .team-name { font-size: 1.4rem; opacity: 0.9; font-weight: 500; margin-bottom: 10px; }
+        .team-name { font-size: 1rem; opacity: 0.8; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; }
         .score { font-size: var(--score-size); font-weight: 900; line-height: 1; margin: 0; }
 
         .timer { font-size: 5rem; font-weight: bold; font-family: var(--font-timer); background: #fff; color: #222; padding: 15px; border-radius: 15px; border: 4px solid #ddd; text-align: center; }
@@ -88,16 +88,16 @@
         #victoryOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 1000; cursor: pointer; text-align: center; color: white;
+            z-index: 1000; cursor: pointer; text-align: center; color: white; backdrop-filter: blur(10px);
         }
         .win-name { font-size: 8rem; font-weight: 900; text-transform: uppercase; }
-        .hidden-theme-trigger { position: fixed; bottom: 5px; right: 5px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; z-index: 9999; }
+        .hidden-theme-trigger { position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; background: transparent; border: none; cursor: pointer; z-index: 9999; }
     </style>
 </head>
 <body id="mainBody">
 
 <div id="victoryOverlay" onclick="this.style.display='none'">
-    <p style="font-size: 3rem; font-weight: bold;">PEMENANG</p>
+    <p style="font-size: 2rem; font-weight: bold; letter-spacing: 5px;">PEMENANG</p>
     <h1 id="winnerName" class="win-name">BIRU</h1>
 </div>
 
@@ -143,7 +143,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // SINKRONISASI DATA (Match Info, Status, Score, Log)
+    // SINKRONISASI IDENTITAS & STATUS
     db.ref('match_info').on('value', snap => {
         const d = snap.val();
         if(!d) return;
@@ -169,38 +169,55 @@
         document.getElementById('scoreMerah').innerText = d.Merah;
     });
 
-    // LOGIKA POINT OTOMATIS
+    // --- LOGIKA POINT OTOMATIS (ANTI-DOUBLE) ---
     let actionQueue = [];
+    let processedActions = new Set(); 
+
     db.ref('log_wasit').on('child_added', snap => {
         const d = snap.val();
-        actionQueue.push(d);
-        const same = actionQueue.filter(item => 
+        const actionId = snap.key; 
+        
+        actionQueue.push({ ...d, id: actionId });
+
+        // Cari aksi yang sama dalam kurun waktu 2 detik
+        const sameActions = actionQueue.filter(item => 
             item.sudut === d.sudut && 
             item.aksi === d.aksi && 
             Math.abs(d.waktu - item.waktu) <= 2000
         );
-        const uniqueJudges = [...new Set(same.map(i => i.wasit))];
-        if (uniqueJudges.length >= 2) {
+
+        const uniqueJudges = [...new Set(sameActions.map(i => i.wasit))];
+        const alreadyPointed = sameActions.some(item => processedActions.has(item.id));
+
+        // Jika ada 2 juri atau lebih DAN rangkaian aksi ini belum pernah menghasilkan poin
+        if (uniqueJudges.length >= 2 && !alreadyPointed) {
+            
+            // Tandai semua ID dalam rangkaian ini agar tidak diproses lagi
+            sameActions.forEach(item => processedActions.add(item.id));
+            
             const poin = (d.aksi === 'pukul' ? 1 : 2);
             db.ref(`score/${d.sudut}`).transaction(c => (c || 0) + poin);
-            actionQueue = actionQueue.filter(item => !(item.sudut === d.sudut && item.aksi === d.aksi));
+            
+            // Bersihkan antrian lama
+            const now = Date.now();
+            actionQueue = actionQueue.filter(item => (now - item.waktu) < 5000);
+            if(processedActions.size > 100) processedActions.clear();
         }
     });
 
     // FUNGSI GANTI TEMA
     let idx = 0;
-    const themes = ['default', 'mode-budaya', 'mode-malam-premium', 'mode-sporty'];
+    const themes = ['default', 'mode-royalty', 'mode-malam-premium', 'mode-sporty'];
     function cycleTheme() {
         idx = (idx + 1) % themes.length;
         document.getElementById('mainBody').className = themes[idx];
-        console.log("Current Theme:", themes[idx]);
     }
 
     function showVictory(corner) {
         const overlay = document.getElementById('victoryOverlay');
         document.getElementById('winnerName').innerText = corner;
         overlay.style.display = 'flex';
-        overlay.style.background = corner === 'Biru' ? 'radial-gradient(circle, #1e90ff, #001970)' : 'radial-gradient(circle, #ff4757, #5f0000)';
+        overlay.style.background = corner === 'Biru' ? 'radial-gradient(circle, #0047bb, #000)' : 'radial-gradient(circle, #d00000, #000)';
     }
 </script>
 </body>
