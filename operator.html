@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operator Control</title>
+    <title>Operator Control - Silat Digital</title>
     <style>
         :root {
-            /* Mode Terang (Fresh & Clean) */
             --bg-body: #f1f5f9;
             --bg-card: #ffffff;
             --text-main: #0f172a;
@@ -20,17 +19,16 @@
         }
 
         body.dark-mode {
-            /* Mode Malam Baru (Soft Dark / Deep Navy) */
-            --bg-body: #0f172a;        /* Navy gelap yang dalam */
-            --bg-card: #1e293b;        /* Slate navy yang lembut */
-            --text-main: #f1f5f9;      /* Putih kusam agar tidak silau */
-            --text-sub: #94a3b8;       /* Abu-abu kebiruan */
-            --accent-blue: #38bdf8;    /* Biru neon lembut */
-            --accent-red: #fb7185;     /* Merah pastel tajam */
-            --accent-green: #4ade80;   /* Hijau cerah tapi soft */
-            --accent-gold: #fbbf24;    /* Emas tetap solid */
-            --border-bold: #334155;    /* Border tidak putih murni agar mata rileks */
-            --input-bg: #0f172a;       /* Input lebih gelap dari card */
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-red: #fb7185;
+            --accent-green: #4ade80;
+            --accent-gold: #fbbf24;
+            --border-bold: #334155;
+            --input-bg: #0f172a;
         }
 
         body {
@@ -45,16 +43,13 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* CARD STYLE */
         .card {
             background: var(--bg-card);
             border: 2px solid var(--border-bold);
             padding: 15px;
             box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
-            position: relative;
         }
 
-        /* HEADER DENGAN TOMBOL MODE */
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -69,7 +64,7 @@
             font-size: 0.85rem;
             font-weight: 900;
             text-transform: uppercase;
-            color: #ffffff; /* Selalu putih di header agar kontras */
+            color: #ffffff;
         }
 
         .theme-switcher {
@@ -84,7 +79,6 @@
             border-radius: 2px;
         }
 
-        /* GRID SYSTEM */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .full { grid-column: span 2; }
 
@@ -104,36 +98,18 @@
             border: 2px solid var(--border-bold);
             color: var(--text-main);
             font-weight: 700;
-            font-size: 0.9rem;
             box-sizing: border-box;
             outline: none;
         }
 
-        input:focus {
-            border-color: var(--accent-gold);
-        }
-
-        /* LIVE SCORE SECTION */
-        .score-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .score-box {
-            border: 2px solid var(--border-bold);
-            padding: 10px;
-            text-align: center;
-            color: white;
-        }
-        .score-blue { background: var(--accent-blue); color: #0f172a; } /* Text gelap di bg terang */
-        .score-red { background: var(--accent-red); color: #0f172a; }
+        .score-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .score-box { border: 2px solid var(--border-bold); padding: 10px; text-align: center; }
+        .score-blue { background: var(--accent-blue); color: #fff; }
+        .score-red { background: var(--accent-red); color: #fff; }
         
-        body.dark-mode .score-blue, body.dark-mode .score-red { color: #0f172a; font-weight: 900; }
-
         .score-val { font-size: 3.5rem; font-weight: 900; line-height: 1; }
         .score-tag { font-size: 0.65rem; font-weight: 900; margin-bottom: 2px; text-transform: uppercase; }
 
-        /* TIMER AREA */
         .timer-display {
             font-size: 5rem;
             font-weight: 900;
@@ -144,14 +120,12 @@
             letter-spacing: -2px;
         }
 
-        /* BUTTONS */
         .btn {
             border: 2px solid var(--border-bold);
             cursor: pointer;
             font-weight: 900;
             text-transform: uppercase;
             padding: 12px;
-            font-size: 0.8rem;
             transition: 0.1s;
         }
         .btn:active { transform: translate(2px, 2px); }
@@ -173,15 +147,15 @@
 
         .round-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
         .btn-rd { background: var(--bg-card); color: var(--text-main); }
-        .btn-rd.active { background: var(--accent-gold); color: #000; border-color: var(--border-bold); }
+        .btn-rd.active { background: var(--accent-gold); color: #000; }
 
         .btn-reset {
-            background: transparent;
-            color: var(--text-sub);
+            background: #000;
+            color: #fff;
             grid-column: span 3;
             margin-top: 15px;
-            font-size: 0.65rem;
-            border: 1px dashed var(--text-sub);
+            font-size: 0.7rem;
+            border: 2px solid red;
         }
     </style>
 </head>
@@ -236,7 +210,7 @@
         <button class="btn btn-rd" id="rd1" onclick="setRound(1)">RD 1</button>
         <button class="btn btn-rd" id="rd2" onclick="setRound(2)">RD 2</button>
         <button class="btn btn-rd" id="rd3" onclick="setRound(3)">RD 3</button>
-        <button class="btn btn-reset" onclick="resetMatch()">RESET MATCH DATA</button>
+        <button class="btn btn-reset" onclick="resetMatch()">RESET TOTAL DATA PERTANDINGAN</button>
     </div>
 </div>
 
@@ -254,7 +228,9 @@
     let localTime = 120;
     let isRunning = false;
     let selectedDuration = 120;
+    let currentRound = 1;
 
+    // Sinkronisasi Tema
     function toggleTheme() {
         const isDark = document.body.classList.toggle('dark-mode');
         localStorage.setItem('silat-theme-op', isDark ? 'dark' : 'light');
@@ -266,12 +242,14 @@
         document.getElementById('themeBtn').innerText = "☀️ MODE TERANG";
     }
 
+    // Listener Skor
     db.ref('score').on('value', snap => {
         const d = snap.val() || { Biru: 0, Merah: 0 };
         document.getElementById('liveScoreBiru').innerText = d.Biru;
         document.getElementById('liveScoreMerah').innerText = d.Merah;
     });
 
+    // Listener Info Identitas
     db.ref('match_info').on('value', snap => {
         const d = snap.val();
         if(d) {
@@ -284,27 +262,30 @@
         }
     });
 
+    // Listener Status Match (Timer & Ronde)
     db.ref('match_status').on('value', snap => {
         const d = snap.val();
         if(!d) return;
         localTime = d.timeLeft;
         isRunning = d.isRunning;
+        currentRound = d.round || 1;
+
         document.getElementById('timerDisp').innerText = formatWaktu(localTime);
         document.getElementById('btnStart').style.display = isRunning ? 'none' : 'inline-block';
         document.getElementById('btnStop').style.display = isRunning ? 'inline-block' : 'none';
-        document.getElementById('roundLabel').innerText = ["", "I", "II", "III"][d.round] || "-";
+        document.getElementById('roundLabel').innerText = ["", "I", "II", "III"][currentRound] || "-";
+        
         document.querySelectorAll('.btn-rd').forEach(btn => btn.classList.remove('active'));
-        if(document.getElementById('rd' + d.round)) document.getElementById('rd' + d.round).classList.add('active');
+        if(document.getElementById('rd' + currentRound)) document.getElementById('rd' + currentRound).classList.add('active');
     });
 
     function setDuration(seconds) {
+        if(isRunning) return; // Jangan ganti durasi saat timer jalan
         selectedDuration = seconds;
+        localTime = seconds;
         document.querySelectorAll('.btn-time').forEach(btn => btn.classList.remove('active'));
         document.getElementById('t' + seconds).classList.add('active');
-        if(!isRunning) {
-            localTime = seconds;
-            db.ref('match_status').update({ timeLeft: seconds });
-        }
+        db.ref('match_status').update({ timeLeft: seconds });
     }
 
     function updateIdentity() {
@@ -316,7 +297,7 @@
             namaMerah: document.getElementById('namaMerah').value,
             timMerah: document.getElementById('timMerah').value
         });
-        alert("DATA TERSIMPAN!");
+        alert("DATA IDENTITAS TERSIMPAN!");
     }
 
     function formatWaktu(t) {
@@ -325,25 +306,41 @@
         return `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    function toggleTimer() { db.ref('match_status/isRunning').set(!isRunning); }
-    function setRound(r) { db.ref('match_status').update({ round: r, timeLeft: selectedDuration, isRunning: false }); }
+    function toggleTimer() { 
+        db.ref('match_status/isRunning').set(!isRunning); 
+    }
+
+    function setRound(r) { 
+        db.ref('match_status').update({ 
+            round: r, 
+            timeLeft: selectedDuration, 
+            isRunning: false 
+        }); 
+    }
     
     function resetMatch() {
-        if(confirm("RESET TOTAL MATCH?")) {
+        if(confirm("PERINGATAN: Ini akan menghapus skor, log juri, dan meriset waktu. Lanjutkan?")) {
             db.ref().update({
                 match_status: { timeLeft: selectedDuration, isRunning: false, round: 1 },
                 score: { Biru: 0, Merah: 0 },
                 log_wasit: null,
-                log_dewan: null
+                log_dewan: null,
+                verifikasi_aktif: null // Membersihkan antrian VAR
             });
         }
     }
 
+    // Logic Countdown (Hanya berjalan jika isRunning true)
     setInterval(() => {
-        if (isRunning && localTime > 0) {
-            localTime--;
-            db.ref('match_status/timeLeft').set(localTime);
-            if (localTime <= 0) db.ref('match_status/isRunning').set(false);
+        if (isRunning) {
+            if (localTime > 0) {
+                localTime--;
+                // Update ke Firebase setiap detik
+                db.ref('match_status/timeLeft').set(localTime);
+            } else {
+                db.ref('match_status/isRunning').set(false);
+                // Trigger suara bel bisa ditambahkan di sini
+            }
         }
     }, 1000);
 </script>
