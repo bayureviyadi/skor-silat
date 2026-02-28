@@ -21,7 +21,7 @@
             --bg-body: #0f0f0f;
             --text-color: #f3e5f5;
             --header-bg: #1a1a1a;
-            --accent: #d4af37; /* Gold */
+            --accent: #d4af37;
         }
         .mode-royalty .side { border: 4px solid var(--accent); border-radius: 0; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
         .mode-royalty .blue-side { background: radial-gradient(circle, #002366, #000); }
@@ -58,38 +58,19 @@
         .mode-sporty .red-side { background: #ff0000; border-radius: 0; clip-path: polygon(5% 0, 100% 0, 100% 100%, 0% 100%); }
 
         /* DASAR LAYOUT */
-        body { 
-            background: var(--bg-body); color: var(--text-color); font-family: var(--font-main); 
-            margin: 0; padding: 20px; overflow: hidden; transition: all 0.5s ease;
-        }
-
+        body { background: var(--bg-body); color: var(--text-color); font-family: var(--font-main); margin: 0; padding: 20px; overflow: hidden; transition: all 0.5s ease; }
         .header { display: flex; justify-content: space-between; background: var(--header-bg); padding: 15px 25px; border-radius: 12px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); align-items: center; }
         .partai-box { background: var(--accent); color: #000; padding: 5px 15px; border-radius: 6px; font-size: 1.2rem; }
-
         .scoreboard { display: grid; grid-template-columns: 1fr 250px 1fr; gap: 20px; align-items: center; margin-top: 20px; }
-        
-        .side { 
-            border-radius: 20px; padding: 30px; text-align: center; 
-            min-height: 450px; color: white; display: flex; flex-direction: column; 
-            justify-content: center; position: relative; border: 6px solid #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: all 0.4s ease;
-        }
-
+        .side { border-radius: 20px; padding: 30px; text-align: center; min-height: 450px; color: white; display: flex; flex-direction: column; justify-content: center; position: relative; border: 6px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: all 0.4s ease; }
         .blue-side { background: linear-gradient(135deg, #0047bb, #0056b3); }
         .red-side { background: linear-gradient(135deg, #d00000, #b33939); }
-
         .player-name { font-size: 3rem; font-weight: 900; text-transform: uppercase; margin: 0; }
         .team-name { font-size: 1rem; opacity: 0.8; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; }
         .score { font-size: var(--score-size); font-weight: 900; line-height: 1; margin: 0; }
-
         .timer { font-size: 5rem; font-weight: bold; font-family: var(--font-timer); background: #fff; color: #222; padding: 15px; border-radius: 15px; border: 4px solid #ddd; text-align: center; }
         .round-num { font-size: 3.5rem; background: #2ed573; color: white; padding: 10px 40px; border-radius: 15px; font-weight: 900; display: inline-block; margin-top: 15px; }
-
-        #victoryOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 1000; cursor: pointer; text-align: center; color: white; backdrop-filter: blur(10px);
-        }
+        #victoryOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; text-align: center; color: white; backdrop-filter: blur(10px); }
         .win-name { font-size: 8rem; font-weight: 900; text-transform: uppercase; }
         .hidden-theme-trigger { position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; background: transparent; border: none; cursor: pointer; z-index: 9999; }
     </style>
@@ -113,7 +94,6 @@
         <div class="player-name" id="dispNamaBiru">PESILAT BIRU</div>
         <div class="score" id="scoreBiru">0</div>
     </div>
-
     <div class="center-col" style="text-align: center;">
         <div class="timer" id="timerDisplay">02:00</div>
         <div>
@@ -121,7 +101,6 @@
             <div class="round-num" id="roundDisplay">I</div>
         </div>
     </div>
-
     <div class="side red-side" onclick="showVictory('Merah')">
         <div class="team-name" id="dispTimMerah">KONTINGEN</div>
         <div class="player-name" id="dispNamaMerah">PESILAT MERAH</div>
@@ -143,10 +122,9 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // SINKRONISASI IDENTITAS & STATUS
+    // SINKRONISASI DATA
     db.ref('match_info').on('value', snap => {
-        const d = snap.val();
-        if(!d) return;
+        const d = snap.val(); if(!d) return;
         document.getElementById('dispKelas').innerText = d.kelas || 'KELAS ...';
         document.getElementById('dispPartai').innerText = d.partai || '0';
         document.getElementById('dispNamaBiru').innerText = d.namaBiru || 'BIRU';
@@ -156,8 +134,7 @@
     });
 
     db.ref('match_status').on('value', snap => {
-        const d = snap.val();
-        if(!d) return;
+        const d = snap.val(); if(!d) return;
         document.getElementById('roundDisplay').innerText = ["","I","II","III"][d.round] || "I";
         let m = Math.floor(d.timeLeft / 60), s = d.timeLeft % 60;
         document.getElementById('timerDisplay').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
@@ -169,43 +146,52 @@
         document.getElementById('scoreMerah').innerText = d.Merah;
     });
 
-    // --- LOGIKA POINT OTOMATIS (ANTI-DOUBLE) ---
+    // --- LOGIKA ANTI-TRIPLE (SANGAT KETAT) ---
     let actionQueue = [];
-    let processedActions = new Set(); 
+    let processedGroups = []; // Menyimpan timestamp grup yang sudah poin
 
     db.ref('log_wasit').on('child_added', snap => {
         const d = snap.val();
-        const actionId = snap.key; 
+        const now = d.waktu;
         
-        actionQueue.push({ ...d, id: actionId });
+        actionQueue.push(d);
 
-        // Cari aksi yang sama dalam kurun waktu 2 detik
-        const sameActions = actionQueue.filter(item => 
+        // 1. Ambil aksi yang tipenya sama dalam jendela 2 detik
+        const candidates = actionQueue.filter(item => 
             item.sudut === d.sudut && 
             item.aksi === d.aksi && 
-            Math.abs(d.waktu - item.waktu) <= 2000
+            Math.abs(now - item.waktu) <= 2000
         );
 
-        const uniqueJudges = [...new Set(sameActions.map(i => i.wasit))];
-        const alreadyPointed = sameActions.some(item => processedActions.has(item.id));
+        // 2. Hitung jumlah juri unik
+        const uniqueJudges = [...new Set(candidates.map(i => i.wasit))];
 
-        // Jika ada 2 juri atau lebih DAN rangkaian aksi ini belum pernah menghasilkan poin
-        if (uniqueJudges.length >= 2 && !alreadyPointed) {
+        // 3. Cek apakah jendela waktu ini sudah pernah menghasilkan poin?
+        // Kita cek apakah ada poin yang masuk untuk sudut & aksi yang sama dalam 2 detik terakhir
+        const isAlreadyProcessed = processedGroups.some(p => 
+            p.sudut === d.sudut && 
+            p.aksi === d.aksi && 
+            Math.abs(now - p.waktu) <= 2000
+        );
+
+        // 4. Jika juri >= 2 dan belum pernah diproses poinnya
+        if (uniqueJudges.length >= 2 && !isAlreadyProcessed) {
             
-            // Tandai semua ID dalam rangkaian ini agar tidak diproses lagi
-            sameActions.forEach(item => processedActions.add(item.id));
-            
+            // Catat bahwa grup waktu ini sudah diproses
+            processedGroups.push({ sudut: d.sudut, aksi: d.aksi, waktu: now });
+
+            // Tambah poin ke Firebase
             const poin = (d.aksi === 'pukul' ? 1 : 2);
             db.ref(`score/${d.sudut}`).transaction(c => (c || 0) + poin);
             
-            // Bersihkan antrian lama
-            const now = Date.now();
-            actionQueue = actionQueue.filter(item => (now - item.waktu) < 5000);
-            if(processedActions.size > 100) processedActions.clear();
+            console.log("POIN MASUK: " + d.sudut + " " + d.aksi);
+
+            // Bersihkan data lama agar tidak berat
+            if(processedGroups.length > 50) processedGroups.shift();
+            actionQueue = actionQueue.filter(item => (Date.now() - item.waktu) < 10000);
         }
     });
 
-    // FUNGSI GANTI TEMA
     let idx = 0;
     const themes = ['default', 'mode-royalty', 'mode-malam-premium', 'mode-sporty'];
     function cycleTheme() {
