@@ -122,7 +122,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // SINKRONISASI DATA
+    // SINKRONISASI DATA DASAR
     db.ref('match_info').on('value', snap => {
         const d = snap.val(); if(!d) return;
         document.getElementById('dispKelas').innerText = d.kelas || 'KELAS ...';
@@ -146,52 +146,54 @@
         document.getElementById('scoreMerah').innerText = d.Merah;
     });
 
-    // --- LOGIKA ANTI-TRIPLE (SANGAT KETAT) ---
+    // --- LOGIKA POINT OTOMATIS (FIXED ANTI-TRIPLE) ---
     let actionQueue = [];
-    let processedGroups = []; // Menyimpan timestamp grup yang sudah poin
+    let lastProcessedAksi = {
+        "Biru-pukul": 0, "Biru-tendang": 0,
+        "Merah-pukul": 0, "Merah-tendang": 0
+    };
 
     db.ref('log_wasit').on('child_added', snap => {
         const d = snap.val();
         const now = d.waktu;
+        const key = `${d.sudut}-${d.aksi}`;
         
+        // Simpan ke antrean lokal
         actionQueue.push(d);
 
-        // 1. Ambil aksi yang tipenya sama dalam jendela 2 detik
-        const candidates = actionQueue.filter(item => 
+        // 1. Cek apakah aksi yang sama baru saja diproses poinnya dalam 2 detik terakhir?
+        if (now - lastProcessedAksi[key] < 2000) {
+            console.log("Diabaikan: Aksi ini sudah sah baru saja.");
+            return; 
+        }
+
+        // 2. Filter juri yang memberikan nilai yang sama dalam jendela 2 detik
+        const sameActions = actionQueue.filter(item => 
             item.sudut === d.sudut && 
             item.aksi === d.aksi && 
             Math.abs(now - item.waktu) <= 2000
         );
 
-        // 2. Hitung jumlah juri unik
-        const uniqueJudges = [...new Set(candidates.map(i => i.wasit))];
+        // 3. Ambil daftar juri unik
+        const uniqueJudges = [...new Set(sameActions.map(i => i.wasit))];
 
-        // 3. Cek apakah jendela waktu ini sudah pernah menghasilkan poin?
-        // Kita cek apakah ada poin yang masuk untuk sudut & aksi yang sama dalam 2 detik terakhir
-        const isAlreadyProcessed = processedGroups.some(p => 
-            p.sudut === d.sudut && 
-            p.aksi === d.aksi && 
-            Math.abs(now - p.waktu) <= 2000
-        );
+        // 4. Jika minimal 2 juri menekan
+        if (uniqueJudges.length >= 2) {
+            // KUNCI: Update waktu terakhir diproses SEBELUM menambah poin
+            lastProcessedAksi[key] = now;
 
-        // 4. Jika juri >= 2 dan belum pernah diproses poinnya
-        if (uniqueJudges.length >= 2 && !isAlreadyProcessed) {
-            
-            // Catat bahwa grup waktu ini sudah diproses
-            processedGroups.push({ sudut: d.sudut, aksi: d.aksi, waktu: now });
-
-            // Tambah poin ke Firebase
+            // Tambah poin
             const poin = (d.aksi === 'pukul' ? 1 : 2);
             db.ref(`score/${d.sudut}`).transaction(c => (c || 0) + poin);
             
-            console.log("POIN MASUK: " + d.sudut + " " + d.aksi);
+            console.log(`SAH! Poin ${d.sudut} +${poin} dari Juri: ${uniqueJudges.join(',')}`);
 
-            // Bersihkan data lama agar tidak berat
-            if(processedGroups.length > 50) processedGroups.shift();
-            actionQueue = actionQueue.filter(item => (Date.now() - item.waktu) < 10000);
+            // Bersihkan antrean lama agar tidak menumpuk
+            actionQueue = actionQueue.filter(item => (now - item.waktu) < 5000);
         }
     });
 
+    // TEMA & VICTORY
     let idx = 0;
     const themes = ['default', 'mode-royalty', 'mode-malam-premium', 'mode-sporty'];
     function cycleTheme() {
